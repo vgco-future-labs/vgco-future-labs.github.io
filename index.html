@@ -6,69 +6,146 @@
 <title>VGCO Future Labs — Independent Security Research</title>
 <meta name="description" content="VGCO Future Labs is an independent security research group in Berlin, Germany. Vulnerability research within official bug bounty programs, coordinated disclosure.">
 <style>
-  :root{--bg:#0e1116;--card:#161b22;--text:#e6edf3;--muted:#9aa4b2;--accent:#4ade80;--line:#2d333b}
+  :root{
+    --ink:#1b2340; --muted:#5b6687;
+    --c1:#2563eb; --c2:#7c3aed; --c3:#06b6d4; --c4:#ec4899;
+    --card:rgba(255,255,255,.72); --line:rgba(37,99,235,.18);
+  }
   *{margin:0;box-sizing:border-box}
-  body{font-family:"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
-  .wrap{max-width:860px;margin:0 auto;padding:48px 24px}
-  header{padding:64px 0 40px;border-bottom:1px solid var(--line)}
-  h1{font-size:2.2rem;letter-spacing:.5px}
-  h1 span{color:var(--accent)}
-  .tag{color:var(--muted);margin-top:10px;font-size:1.05rem}
-  h2{font-size:1.15rem;margin:40px 0 14px;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px}
-  p{margin-bottom:12px}
-  .muted{color:var(--muted)}
-  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px}
-  .card h3{font-size:1rem;margin-bottom:6px}
-  table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
-  th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);font-size:.95rem}
-  th{color:var(--muted);font-weight:600}
-  tr:last-child td{border-bottom:none}
-  a{color:var(--accent);text-decoration:none}
-  a:hover{text-decoration:underline}
-  footer{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem}
-  @media(max-width:640px){.grid{grid-template-columns:1fr}}
+  html{scroll-behavior:smooth}
+  body{font-family:"Segoe UI",system-ui,sans-serif;color:var(--ink);line-height:1.65;background:#f4f8ff;overflow-x:hidden}
+  .mono{font-family:Consolas,"Cascadia Mono",monospace}
+
+  /* ===== aurora + cyber grid background ===== */
+  .bg{position:fixed;inset:0;z-index:-2;background:linear-gradient(180deg,#eef5ff 0%,#fdfdff 55%,#f2f9ff 100%)}
+  .blob{position:fixed;z-index:-1;width:46vw;height:46vw;border-radius:50%;filter:blur(90px);opacity:.38;animation:drift 18s ease-in-out infinite alternate}
+  .b1{top:-12vw;left:-10vw;background:#8ab8ff}
+  .b2{top:10vw;right:-14vw;background:#d8b4fe;animation-delay:-6s}
+  .b3{bottom:-16vw;left:22vw;background:#99f0ff;animation-delay:-12s}
+  @keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(6vw,4vw) scale(1.15)}}
+  .grid{position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background-image:linear-gradient(rgba(37,99,235,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(37,99,235,.06) 1px,transparent 1px);
+    background-size:44px 44px;
+    mask-image:radial-gradient(ellipse 90% 70% at 50% 0%,#000 30%,transparent 100%)}
+
+  .wrap{max-width:980px;margin:0 auto;padding:40px 24px}
+
+  /* ===== header ===== */
+  header{position:relative;padding:84px 0 56px;text-align:center}
+  .badge{display:inline-block;padding:6px 16px;border:1px solid var(--line);border-radius:999px;background:var(--card);
+    font-size:.8rem;letter-spacing:2px;text-transform:uppercase;color:var(--c1);backdrop-filter:blur(8px)}
+  .badge .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;margin-right:8px;animation:pulse 1.6s infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.5)}50%{box-shadow:0 0 0 6px rgba(34,197,94,0)}}
+  h1{font-size:clamp(2.4rem,6vw,3.8rem);margin:22px 0 10px;letter-spacing:.5px}
+  h1 .grad{background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3),var(--c1));background-size:300% 100%;
+    -webkit-background-clip:text;background-clip:text;color:transparent;animation:hue 6s linear infinite}
+  @keyframes hue{to{background-position:300% 0}}
+  .tag{color:var(--muted);font-size:1.1rem}
+  .scan{position:absolute;left:10%;right:10%;bottom:0;height:1px;overflow:hidden;background:var(--line)}
+  .scan::after{content:"";position:absolute;top:0;left:-30%;width:30%;height:100%;
+    background:linear-gradient(90deg,transparent,var(--c3),transparent);animation:scan 3s linear infinite}
+  @keyframes scan{to{left:130%}}
+
+  h2{font-size:1rem;margin:64px 0 18px;color:var(--c2);text-transform:uppercase;letter-spacing:3px;text-align:center}
+  h2::before,h2::after{content:"//";color:var(--c3);margin:0 10px;font-family:Consolas,monospace}
+
+  .lead{max-width:760px;margin:0 auto;text-align:center;color:#33406a;font-size:1.06rem}
+
+  /* ===== principles ===== */
+  .principles{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:26px}
+  .pcard{position:relative;border-radius:18px;padding:2px;background:linear-gradient(135deg,var(--c1),var(--c2),var(--c4),var(--c3),var(--c1));
+    background-size:300% 300%;animation:border-flow 7s linear infinite}
+  @keyframes border-flow{to{background-position:300% 0}}
+  .pcard-in{height:100%;border-radius:16px;background:rgba(255,255,255,.93);padding:28px 26px;backdrop-filter:blur(6px);
+    transition:transform .25s ease,box-shadow .25s ease}
+  .pcard:hover .pcard-in{transform:translateY(-5px);box-shadow:0 18px 44px rgba(37,99,235,.2)}
+  .picon{font-size:2rem;display:block;margin-bottom:12px;filter:drop-shadow(0 0 10px rgba(124,58,237,.35))}
+  .pcard h3{font-size:1.22rem;margin-bottom:8px;background:linear-gradient(90deg,var(--c1),var(--c2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .pcard p{color:var(--muted);font-size:.98rem}
+  .pnum{position:absolute;top:14px;right:20px;font-family:Consolas,monospace;font-size:.85rem;color:var(--c3);opacity:.9}
+
+  /* ===== CVE ticker ===== */
+  .ticker-note{text-align:center;color:var(--muted);margin-bottom:18px}
+  .ticker{position:relative;overflow:hidden;padding:12px 0;
+    mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+  .track{display:flex;gap:18px;width:max-content;animation:roll 28s linear infinite}
+  .ticker:hover .track{animation-play-state:paused}
+  @keyframes roll{to{transform:translateX(-50%)}}
+  .cve{min-width:290px;border:1px solid var(--line);border-radius:14px;background:var(--card);backdrop-filter:blur(8px);
+    padding:18px 20px;text-decoration:none;color:var(--ink);transition:box-shadow .25s,border-color .25s;display:block}
+  .cve:hover{border-color:var(--c3);box-shadow:0 0 0 1px var(--c3),0 10px 30px rgba(6,182,212,.25)}
+  .cve .id{font-family:Consolas,monospace;font-weight:700;color:var(--c1);font-size:1.05rem}
+  .cve .comp{margin-top:4px;font-size:.95rem}
+  .cve .impact{display:inline-block;margin-top:10px;font-size:.78rem;padding:3px 10px;border-radius:999px;letter-spacing:.5px}
+  .i-eop{background:#ede9fe;color:#6d28d9}.i-rce{background:#fce7f3;color:#be185d}.i-tam{background:#cffafe;color:#0e7490}
+  .cve .date{float:right;color:var(--muted);font-size:.8rem;margin-top:12px}
+
+  /* ===== scope / contact ===== */
+  .scope{max-width:760px;margin:0 auto;text-align:center}
+  .contact{display:inline-block;margin-top:14px;padding:12px 26px;border-radius:999px;color:#fff;font-weight:600;text-decoration:none;
+    background:linear-gradient(90deg,var(--c1),var(--c2));box-shadow:0 10px 26px rgba(124,58,237,.35);transition:transform .2s}
+  .contact:hover{transform:translateY(-2px)}
+
+  footer{margin-top:80px;padding:26px 0 34px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;text-align:center}
+  a{color:var(--c1)}
+  @media(max-width:680px){.principles{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
+<div class="bg"></div><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="grid"></div>
+
 <div class="wrap">
   <header>
-    <h1>VGCO <span>Future Labs</span></h1>
-    <p class="tag">Independent security research · Berlin, Germany · Est. 2026</p>
+    <span class="badge"><span class="dot"></span>Independent Security Research</span>
+    <h1>VGCO <span class="grad">Future Labs</span></h1>
+    <p class="tag">Berlin, Germany · Est. 2026 · <span class="mono">coordinated disclosure only</span></p>
+    <div class="scan"></div>
   </header>
 
   <h2>About</h2>
-  <p>VGCO Future Labs is a group of independent security researchers working under one roof.
+  <p class="lead">VGCO Future Labs is a group of independent security researchers working under one roof.
   Each researcher focuses on different vendor targets within official bug bounty programs —
   primarily the Microsoft Security Response Center (MSRC) bounty programs — and we share
   methodology and tooling with each other.</p>
 
   <h2>Principles</h2>
-  <div class="grid">
-    <div class="card">
+  <div class="principles">
+    <div class="pcard"><div class="pcard-in">
+      <span class="pnum">01</span>
+      <span class="picon">🛡️</span>
       <h3>User safety first</h3>
-      <p class="muted">The safety of the affected vendors' customers always comes before publication, recognition, or reward.</p>
-    </div>
-    <div class="card">
+      <p>The safety of the affected vendors' customers always comes before publication, recognition, or reward.</p>
+    </div></div>
+    <div class="pcard"><div class="pcard-in">
+      <span class="pnum">02</span>
+      <span class="picon">🔍</span>
       <h3>Transparency through coordinated disclosure</h3>
-      <p class="muted">We report every finding to the vendor and disclose publicly only after a fix is available, following coordinated vulnerability disclosure.</p>
-    </div>
+      <p>We report every finding to the vendor and disclose publicly only after a fix is available, following coordinated vulnerability disclosure.</p>
+    </div></div>
   </div>
 
   <h2>Selected advisories</h2>
-  <p class="muted">Credited as “… with VGCO Future Labs” on the <a href="https://msrc.microsoft.com/update-guide/acknowledgments" rel="noopener">MSRC Acknowledgements</a> page.</p>
-  <table>
-    <tr><th>Advisory</th><th>Component</th><th>Impact</th><th>Released</th></tr>
-    <tr><td><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-96994" rel="noopener">CVE-2026-96994</a></td><td>Windows Winsock</td><td>Elevation of Privilege</td><td>Nov 2026</td></tr>
-    <tr><td><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-105526" rel="noopener">CVE-2026-105526</a></td><td>Windows Winsock</td><td>Elevation of Privilege</td><td>Nov 2026</td></tr>
-    <tr><td><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-111301" rel="noopener">CVE-2026-111301</a></td><td>Microsoft Office Access</td><td>Remote Code Execution</td><td>Nov 2026</td></tr>
-    <tr><td><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-96311" rel="noopener">CVE-2026-96311</a></td><td>Windows Network List Service</td><td>Tampering</td><td>Oct 2026</td></tr>
-  </table>
+  <p class="ticker-note">Credited as “… with VGCO Future Labs” on the
+    <a href="https://msrc.microsoft.com/update-guide/acknowledgments" rel="noopener">MSRC Acknowledgements</a> page.</p>
+  <div class="ticker"><div class="track">
+    <!-- set 1 -->
+    <a class="cve" href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-96994" rel="noopener"><span class="id">CVE-2026-96994</span><div class="comp">Windows Winsock</div><span class="impact i-eop">Elevation of Privilege</span><span class="date">Nov 2026</span></a>
+    <a class="cve" href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-105526" rel="noopener"><span class="id">CVE-2026-105526</span><div class="comp">Windows Winsock</div><span class="impact i-eop">Elevation of Privilege</span><span class="date">Nov 2026</span></a>
+    <a class="cve" href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-111301" rel="noopener"><span class="id">CVE-2026-111301</span><div class="comp">Microsoft Office Access</div><span class="impact i-rce">Remote Code Execution</span><span class="date">Nov 2026</span></a>
+    <a class="cve" href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-96311" rel="noopener"><span class="id">CVE-2026-96311</span><div class="comp">Windows Network List Service</div><span class="impact i-tam">Tampering</span><span class="date">Oct 2026</span></a>
+    <!-- set 2 (duplicate for seamless loop) -->
+    <a class="cve" href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-96994" rel="noopener"><span class="id">CVE-2026-96994</span><div class="comp">Windows Winsock</div><span class="impact i-eop">Elevation of Privilege</span><span class="date">Nov 2026</span></a>
+    <a class="cve" href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-105526" rel="noopener"><span class="id">CVE-2026-105526</span><div class="comp">Windows Winsock</div><span class="impact i-eop">Elevation of Privilege</span><span class="date">Nov 2026</span></a>
+    <a class="cve" href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-111301" rel="noopener"><span class="id">CVE-2026-111301</span><div class="comp">Microsoft Office Access</div><span class="impact i-rce">Remote Code Execution</span><span class="date">Nov 2026</span></a>
+    <a class="cve" href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-96311" rel="noopener"><span class="id">CVE-2026-96311</span><div class="comp">Windows Network List Service</div><span class="impact i-tam">Tampering</span><span class="date">Oct 2026</span></a>
+  </div></div>
 
-  <h2>Scope &amp; contact</h2>
-  <p>All of our testing targets systems that are explicitly in scope of the vendor's official
-  bug bounty program. We do not test systems without authorization.</p>
-  <p>Security contact: <strong>leader@vgco-future-labs.com</strong></p>
+  <h2>Scope &amp; Contact</h2>
+  <div class="scope">
+    <p>All of our testing targets systems that are explicitly in scope of the vendor's official
+    bug bounty program. We do not test systems without authorization.</p>
+    <a class="contact" href="mailto:info@vgco-future-labs.com">Security contact: info@vgco-future-labs.com</a>
+  </div>
 
   <footer>© 2026 VGCO Future Labs · Berlin, Germany</footer>
 </div>
