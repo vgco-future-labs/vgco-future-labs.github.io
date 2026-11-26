@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VGCO Future Labs — Independent Security Research</title>
+<meta name="description" content="VGCO Future Labs is an independent security research group in Berlin, Germany. Vulnerability research within official bug bounty programs, coordinated disclosure.">
+<style>
+  :root{--bg:#0e1116;--card:#161b22;--text:#e6edf3;--muted:#9aa4b2;--accent:#4ade80;--line:#2d333b}
+  *{margin:0;box-sizing:border-box}
+  body{font-family:"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+  .wrap{max-width:860px;margin:0 auto;padding:48px 24px}
+  header{padding:64px 0 40px;border-bottom:1px solid var(--line)}
+  h1{font-size:2.2rem;letter-spacing:.5px}
+  h1 span{color:var(--accent)}
+  .tag{color:var(--muted);margin-top:10px;font-size:1.05rem}
+  h2{font-size:1.15rem;margin:40px 0 14px;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px}
+  p{margin-bottom:12px}
+  .muted{color:var(--muted)}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+  .card h3{font-size:1rem;margin-bottom:6px}
+  table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);font-size:.95rem}
+  th{color:var(--muted);font-weight:600}
+  tr:last-child td{border-bottom:none}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  footer{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem}
+  @media(max-width:640px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>VGCO <span>Future Labs</span></h1>
+    <p class="tag">Independent security research · Berlin, Germany · Est. 2026</p>
+  </header>
+
+  <h2>About</h2>
+  <p>VGCO Future Labs is a group of independent security researchers working under one roof.
+  Each researcher focuses on different vendor targets within official bug bounty programs —
+  primarily the Microsoft Security Response Center (MSRC) bounty programs — and we share
+  methodology and tooling with each other.</p>
+
+  <h2>Principles</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>User safety first</h3>
+      <p class="muted">The safety of the affected vendors' customers always comes before publication, recognition, or reward.</p>
+    </div>
+    <div class="card">
+      <h3>Transparency through coordinated disclosure</h3>
+      <p class="muted">We report every finding to the vendor and disclose publicly only after a fix is available, following coordinated vulnerability disclosure.</p>
+    </div>
+  </div>
+
+  <h2>Selected advisories</h2>
+  <p class="muted">Credited as “… with VGCO Future Labs” on the <a href="https://msrc.microsoft.com/update-guide/acknowledgments" rel="noopener">MSRC Acknowledgements</a> page.</p>
+  <table>
+    <tr><th>Advisory</th><th>Component</th><th>Impact</th><th>Released</th></tr>
+    <tr><td><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-96994" rel="noopener">CVE-2026-96994</a></td><td>Windows Winsock</td><td>Elevation of Privilege</td><td>Nov 2026</td></tr>
+    <tr><td><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-105526" rel="noopener">CVE-2026-105526</a></td><td>Windows Winsock</td><td>Elevation of Privilege</td><td>Nov 2026</td></tr>
+    <tr><td><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-111301" rel="noopener">CVE-2026-111301</a></td><td>Microsoft Office Access</td><td>Remote Code Execution</td><td>Nov 2026</td></tr>
+    <tr><td><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-96311" rel="noopener">CVE-2026-96311</a></td><td>Windows Network List Service</td><td>Tampering</td><td>Oct 2026</td></tr>
+  </table>
+
+  <h2>Scope &amp; contact</h2>
+  <p>All of our testing targets systems that are explicitly in scope of the vendor's official
+  bug bounty program. We do not test systems without authorization.</p>
+  <p>Security contact: <strong>leader@vgco-future-labs.com</strong></p>
+
+  <footer>© 2026 VGCO Future Labs · Berlin, Germany</footer>
+</div>
+</body>
+</html>
